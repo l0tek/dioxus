@@ -1,0 +1,75 @@
+# Dioxus Android App Setup Log
+
+Dieses Repository wurde in dieser Session von Grund auf erstellt und bis zum laufenden Android-Emulator gebracht.
+
+## Durchgeführte Aktionen
+
+1. Projekt initialisiert
+- `cargo init --bin --name dioxus_android_app .`
+- Basisdateien erzeugt: `Cargo.toml`, `src/main.rs`, `.gitignore`.
+
+2. Dioxus-App erstellt
+- `src/main.rs` auf eine minimale Dioxus-App umgestellt (`dioxus::launch(app)`, `rsx!` UI).
+- `Dioxus.toml` angelegt mit Android als `default_platform`.
+
+3. Abhängigkeiten und Versionen korrigiert
+- Anfangs Dioxus 0.6 genutzt, später auf 0.7 aktualisiert wegen CLI-Kompatibilität.
+- Finale Dependency in `Cargo.toml`:
+  - `dioxus = { version = "0.7", default-features = false, features = ["mobile", "launch", "lib"] }`
+
+4. Tooling installiert
+- `dioxus-cli` (`dx`) installiert.
+- Rust Android Targets installiert:
+  - `aarch64-linux-android`
+  - `x86_64-linux-android`
+
+5. Android SDK/NDK vorbereitet
+- SDK-Tools vorhanden geprüft (`sdkmanager`, `adb`, `javac`).
+- Lizenzen akzeptiert (`sdkmanager --licenses`).
+- NDK installiert und final genutzt:
+  - `/home/l0tek/Android/Sdk/ndk/27.2.12479018`
+
+6. Android Build erfolgreich ausgeführt
+- `dx build --platform android`
+- APK erzeugt unter:
+  - `target/dx/dioxus_android_app/debug/android/app/app/build/outputs/apk/debug/app-debug.apk`
+
+7. Emulator eingerichtet und App gestartet
+- AVD erstellt: `Pixel_6_API_35`.
+- Emulator mehrfach stabilisiert (Cold Boot, ohne Snapshot, bei Bedarf `-wipe-data`).
+- APK installiert:
+  - `adb -s emulator-5554 install -r .../app-debug.apk`
+- App gestartet:
+  - `adb -s emulator-5554 shell am start -W -n com.example.dioxusandroidapp/dev.dioxus.main.MainActivity`
+- Fokus verifiziert über `dumpsys window` / `dumpsys activity`.
+
+8. Live-Entwicklung
+- `dx serve --platform android` gestartet (bei Absturz neu gestartet).
+
+## Reproduzierbare Kommandos
+
+```bash
+export ANDROID_HOME=/home/l0tek/Android/Sdk
+export ANDROID_SDK_ROOT=/home/l0tek/Android/Sdk
+export ANDROID_NDK_HOME=/home/l0tek/Android/Sdk/ndk/27.2.12479018
+
+# Build
+/home/l0tek/.cargo/bin/dx build --platform android
+
+# APK installieren
+adb -s emulator-5554 install -r target/dx/dioxus_android_app/debug/android/app/app/build/outputs/apk/debug/app-debug.apk
+
+# App starten
+adb -s emulator-5554 shell am start -W -n com.example.dioxusandroidapp/dev.dioxus.main.MainActivity
+
+# Dev server
+/home/l0tek/.cargo/bin/dx serve --platform android
+```
+
+## Aktuelle Projektdateien
+- `Cargo.toml`
+- `Cargo.lock`
+- `Dioxus.toml`
+- `src/main.rs`
+- `.gitignore`
+- `README.me`
