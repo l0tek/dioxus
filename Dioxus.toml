@@ -1,0 +1,10 @@
+[application]
+name = "dioxus-android-app"
+default_platform = "android"
+out_dir = "dist"
+
+[web.app]
+title = "Dioxus Android App"
+
+[bundle]
+identifier = "com.example.dioxusandroidapp"
